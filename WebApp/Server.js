@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 
 
 const app = express();
+app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 AWS.config.update({region: 'us-east-1'});
@@ -14,7 +15,7 @@ const tableName = 'LoginData';
 
 app.post('/submit', (req, res) => {
     // Extract username and password from the request body
-    const { username, password } = request.body;
+    const { username, password } = req.body;
 
     // Obtain client IP information
     const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
@@ -34,7 +35,7 @@ app.post('/submit', (req, res) => {
         if (err) {
             console.error("Unable to add item. Error: ", JSON.stringify(err));
         } else {
-            res.send('Credentials stored successfully');
+            res.redirect('/');
         }
 
 
@@ -44,5 +45,5 @@ app.post('/submit', (req, res) => {
 
 const port = 3000;
 app.listen(port, () => {
-    console.log('Server is running on http://localhost:${port}');
+    console.log("Server is running on http://localhost:${port}");
 });
